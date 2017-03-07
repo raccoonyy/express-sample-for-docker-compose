@@ -1,0 +1,36 @@
+version: '2'
+
+volumes:
+  express_sample_db_dev: {}
+
+services:
+  db:
+    image: postgres:9.6.1
+    volumes:
+      - express_sample_db_dev:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=sampledb
+      - POSTGRES_USER=sampleuser
+      - POSTGRES_PASSWORD=samplesecret
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8
+
+  express:
+    build:
+      context: .
+      dockerfile: ./compose/express/Dockerfile-dev
+    command: /start-dev.sh
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./src:/app/src
+      - ./package.json:/app/package.json
+    environment:
+      - EXPRESS_DB_HOST=postgres
+      - EXPRESS_DB_PORT=5432
+      - EXPRESS_DB_NAME=sampledb
+      - EXPRESS_DB_USER=sampleuser
+      - EXPRESS_DB_PASSWORD=samplesecret
+    depends_on:
+      - db
+    links:
+      - db:postgres
