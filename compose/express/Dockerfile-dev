@@ -2,8 +2,6 @@ FROM node:7.7.1
 MAINTAINER raccoony <raccoonyy@gmail.com>
 
 WORKDIR /app
-ADD    ./package.json         /app/
-RUN    npm install
 
 ADD    compose/express/start-dev.sh    /start-dev.sh
 RUN    chmod +x /*.sh
